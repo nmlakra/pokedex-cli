@@ -7,13 +7,24 @@ import (
 	"strings"
 )
 
+type CommandCallback func(config *Config) error
+
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    CommandCallback
+}
+
+type Config struct {
+	limit    int
+	next     string
+	previous string
 }
 
 func main() {
+
+	var config Config
+	config.limit = 20
 
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
@@ -24,7 +35,7 @@ func main() {
 		if command, ok := validCommands()[commandName]; !ok {
 			fmt.Println("Unkown command")
 		} else {
-			command.callback()
+			command.callback(&config)
 		}
 	}
 }
@@ -46,6 +57,16 @@ func validCommands() map[string]cliCommand {
 			name:        "help",
 			description: "Displays a help message",
 			callback:    commandHelp,
+		},
+		"map": {
+			name:        "map",
+			description: "Displays next 20 locations",
+			callback:    commandMap,
+		},
+		"mapb": {
+			name:        "map",
+			description: "Displays previous 20 locations",
+			callback:    commandMapb,
 		},
 	}
 }
