@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
+
+	"github.com/nmlakra/pokedex-cli/internal/pokecache"
 )
 
 type CommandCallback func(config *Config) error
@@ -16,15 +19,18 @@ type cliCommand struct {
 }
 
 type Config struct {
-	limit    int
-	next     string
-	previous string
+	limit       int
+	next        string
+	previous    string
+	cache       pokecache.Cache
+	commandArgs []string
 }
 
 func main() {
 
 	var config Config
 	config.limit = 20
+	config.cache = *pokecache.NewCache(300 * time.Second)
 
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
@@ -32,6 +38,7 @@ func main() {
 		scanner.Scan()
 		inputTexts := cleanInput(scanner.Text())
 		commandName := inputTexts[0]
+		config.commandArgs = inputTexts[1:]
 		if command, ok := validCommands()[commandName]; !ok {
 			fmt.Println("Unkown command")
 		} else {

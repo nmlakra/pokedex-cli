@@ -1,37 +1,10 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"net/http"
+
+	"github.com/nmlakra/pokedex-cli/internal/pokeapi"
 )
-
-type mapData struct {
-	Count    int    `json:"Count"`
-	Next     string `json:"next"`
-	Previous string `json:"previous"`
-	Results  []struct {
-		Name string `json:"name"`
-		URL  string `json:"url"`
-	} `json:"results"`
-}
-
-func getLocationAreaData(url string) (mapData, error) {
-	res, err := http.Get(url)
-	if err != nil {
-		return mapData{}, err
-	}
-	defer res.Body.Close()
-
-	var data mapData
-	decoder := json.NewDecoder(res.Body)
-	err = decoder.Decode(&data)
-	if err != nil {
-		return mapData{}, err
-	}
-
-	return data, nil
-}
 
 func commandMap(config *Config) error {
 	offset := 0
@@ -39,15 +12,15 @@ func commandMap(config *Config) error {
 	if config.next != "" {
 		url = config.next
 	}
-	mapJsonData, err := getLocationAreaData(url)
+	mapDataJson, err := pokeapi.Get(url, &config.cache)
 	if err != nil {
 		return err
 	}
 
-	config.next = mapJsonData.Next
-	config.previous = mapJsonData.Previous
+	config.next = mapDataJson.Next
+	config.previous = mapDataJson.Previous
 
-	mapResults := mapJsonData.Results
+	mapResults := mapDataJson.Results
 	for _, res := range mapResults {
 		fmt.Println(res.Name)
 	}
@@ -61,15 +34,15 @@ func commandMapb(config *Config) error {
 		return nil
 	}
 	url := config.previous
-	mapJsonData, err := getLocationAreaData(url)
+	mapDataJson, err := pokeapi.Get(url, &config.cache)
 	if err != nil {
 		return err
 	}
 
-	config.next = mapJsonData.Next
-	config.previous = mapJsonData.Previous
+	config.next = mapDataJson.Next
+	config.previous = mapDataJson.Previous
 
-	mapResults := mapJsonData.Results
+	mapResults := mapDataJson.Results
 	for _, res := range mapResults {
 		fmt.Println(res.Name)
 	}
