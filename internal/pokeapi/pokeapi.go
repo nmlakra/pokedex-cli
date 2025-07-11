@@ -31,7 +31,7 @@ func Get(url string, cache *pokecache.Cache) ([]byte, error) {
 	return data, nil
 }
 
-func GetLocationAreaData(url string, cache *pokecache.Cache) (mapData, error) {
+func GetLocation(url string, cache *pokecache.Cache) (mapData, error) {
 	data, err := Get(url, cache)
 	if err != nil {
 		return mapData{}, err
@@ -43,4 +43,18 @@ func GetLocationAreaData(url string, cache *pokecache.Cache) (mapData, error) {
 		return mapData{}, err
 	}
 	return mapDataJson, nil
+}
+
+func GetLocationDetails(url string, cache *pokecache.Cache) (exploreData, error) {
+	data, err := Get(url, cache)
+	if err != nil {
+		return exploreData{}, err
+	}
+
+	var exploreDataJson exploreData
+	err = json.Unmarshal(data, &exploreDataJson)
+	if err != nil {
+		return exploreData{}, err
+	}
+	return exploreDataJson, nil
 }

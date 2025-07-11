@@ -12,7 +12,7 @@ func commandMap(config *Config) error {
 	if config.next != "" {
 		url = config.next
 	}
-	mapDataJson, err := pokeapi.GetLocationAreaData(url, &config.cache)
+	mapDataJson, err := pokeapi.GetLocation(url, &config.cache)
 	if err != nil {
 		return err
 	}
@@ -34,7 +34,7 @@ func commandMapb(config *Config) error {
 		return nil
 	}
 	url := config.previous
-	mapDataJson, err := pokeapi.GetLocationAreaData(url, &config.cache)
+	mapDataJson, err := pokeapi.GetLocation(url, &config.cache)
 	if err != nil {
 		return err
 	}
