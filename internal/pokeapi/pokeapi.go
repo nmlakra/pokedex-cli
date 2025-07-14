@@ -2,7 +2,6 @@ package pokeapi
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 
@@ -12,7 +11,6 @@ import (
 func Get(url string, cache *pokecache.Cache) ([]byte, error) {
 	var data []byte
 	if cacheData, present := cache.Get(url); present {
-		fmt.Println("using cached data!")
 		data = cacheData
 	} else {
 		res, err := http.Get(url)
@@ -25,7 +23,6 @@ func Get(url string, cache *pokecache.Cache) ([]byte, error) {
 		if err != nil {
 			return nil, err
 		}
-		fmt.Println("caching data!")
 		cache.Add(url, data)
 	}
 	return data, nil

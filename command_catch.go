@@ -76,6 +76,7 @@ func commandCatch(config *Config) error {
 	} else {
 		fmt.Printf("%s was caught\n", pokemonId)
 		config.pokedex[pokemonId] = parsePokemonData(&res)
+		fmt.Println("You may now inspect it with the inspect command.")
 	}
 
 	return nil
