@@ -24,6 +24,7 @@ type Config struct {
 	previous    string
 	cache       pokecache.Cache
 	commandArgs []string
+	pokedex     map[string]Pokemon
 }
 
 func main() {
@@ -31,6 +32,7 @@ func main() {
 	var config Config
 	config.limit = 20
 	config.cache = *pokecache.NewCache(300 * time.Second)
+	config.pokedex = make(map[string]Pokemon)
 
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
@@ -55,6 +57,11 @@ func cleanInput(text string) []string {
 
 func validCommands() map[string]cliCommand {
 	return map[string]cliCommand{
+		"catch": {
+			name:        "catch",
+			description: "Catch a pokemon",
+			callback:    commandCatch,
+		},
 		"exit": {
 			name:        "exit",
 			description: "Exit the pokedex",
@@ -69,6 +76,11 @@ func validCommands() map[string]cliCommand {
 			name:        "help",
 			description: "Displays a help message",
 			callback:    commandHelp,
+		},
+		"inspect": {
+			name:        "inspect",
+			description: "Displays the details of a caught pokemon",
+			callback:    commandInspect,
 		},
 		"map": {
 			name:        "map",
